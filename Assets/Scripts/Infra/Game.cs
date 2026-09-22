@@ -11,6 +11,7 @@ public class Game : MonoBehaviour
     public Sound sound;
     public Monetization monetization;
     public Saveloading saveloading;
+    public Map map;
 
     public Player player;
 

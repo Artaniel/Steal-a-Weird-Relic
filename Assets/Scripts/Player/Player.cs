@@ -7,6 +7,8 @@ public class Player : MonoBehaviour, IHealthy
     public InputRouter input;
     public PlayerMovement movement;
     public PlayerSound sound;
+    public PlayerButtonPresser playerButtonPresser;
+    public Transform cameraHolder;
 
     public void Init(Game game) {
         _game = game;
@@ -15,6 +17,7 @@ public class Player : MonoBehaviour, IHealthy
         movement.Init(game, this);
         sound.Init(game, this);  
         input.Init(game, this);
+        playerButtonPresser.Init(game, this);
     }
   
     private void Update() {

@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 33a5e95f1cb832a4f8a4af214f5809cd
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - ui: {instanceID: 0}
+  - session: {instanceID: 0}
+  - mainCamera: {instanceID: 0}
+  - health: {instanceID: 0}
+  - sound: {instanceID: 0}
+  - monetization: {instanceID: 0}
+  - saveloading: {instanceID: 0}
+  - bootChannel: {fileID: 11400000, guid: 9a711e11274f79d4cb045b5c6daba96b, type: 2}
+  - library: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

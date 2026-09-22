@@ -1,0 +1,130 @@
+# Steal a Weird Relic: Blocky Museum — таски (DEV/generalist)
+
+Без арта, поиска ассетов, звука, маркетинга, перевода текста (тексты уже даны в ГДД — нужна только техническая обвязка локализации). Экономика/баланс — числа берутся из ГДД как есть, не изобретаются.
+
+## Итерация 0 — Скелет проекта
+Unity, структура, заглушки сцен, WebGL билд-пайплайн.
+[+]0.1 Создать Unity проект (LTS, WebGL), установить WebGL Build Support.
+[+]0.2 Структура папок: Scenes / Scripts / Prefabs / Configs / Art (пусто, заполнят художники) / Audio (пусто).
+[]0.3 .gitignore для Unity, проверить что Library/Temp не в репо.
+[+]0.4 Три сцены: Boot, Museum, Heist. Добавить в Build Settings в этом порядке.
+[]0.5 Fixed isometric camera setup на сцене Heist.
+[+]0.6 WebGL Player Settings: Gzip, memory budget под лимит ≤18 МБ payload на старте.
+[]0.7 Пустая тестовая сборка, открыть в браузере, убедиться что грузится.
+
+Итерация 1 — Movement / Room (День 1)
+InputRouter, TapPathfinder, границы комнаты.
+[]1.1 Модуль InputRouter: определяет активную схему ввода — desktop WASD, portrait tap-to-move, landscape stick, gamepad.
+[]1.2 Реализовать WASD-движение (desktop).
+[]1.3 Реализовать tap-to-move.
+[]1.3.1 Реализовать TapPathfinder (портрет, мобильный дефолт).
+[]1.4 Реализовать виртуальный стик (landscape optional).
+[]1.6 Реализовать комнаты и переходы.
+[]1.7 Начало и конец Heist игровой сессии.
+
+## Итерация 2 — Traps / Hearts / Escape (День 2)
+TrapSystem, здоровье игрока, побег.
+
+[]2.1 Модуль TrapSystem с 4 типами: laser, camera, plate, drone — интерфейс ITrap с методом активации/детекта игрока.
+[]2.2 Laser: линия/зона детекта, вкл/выкл по паттерну.
+[]2.3 Camera: конус обзора, детект по нахождению в конусе N времени.
+[]2.4 Plate: триггер по весу/нажатию (наступил — сработало).
+[]2.5 Drone: патрулирующий агент с зоной детекта (путь по вейпоинтам либо NavMesh — на выбор, без арта, примитив-капсула).
+[]2.6 Trap seed фиксируется на старте run и не меняется до рестарта (детерминированный паттерн ловушек в рамках одного захода).
+[]2.7 Trap telegraph: визуальный/логический сигнал за ≥500 мс до срабатывания урона (сам сигнал — минимальный, без арта).
+[]2.8 Health/Hearts: 3 сердца, потеря сердца при попадании в ловушку.
+[]2.9 При потере сердца — возврат игрока к двери текущей комнаты (не к началу run).
+[]2.10 При 0 сердец — heist fail, переход в Result (failed).
+[]2.11 Escape-фаза: таймер 20 секунд после выбора реликвии.
+[]2.12 На escape активные ловушки меняются (реролл/смена паттерна ловушек комнаты).
+[]2.13 Assist route: после двух ошибок в рамках run — предложить безопасный путь (флаг на UI/pathfinder, сама подсветка — минимальная).
+
+## Итерация 3 — Museum / relics data / display slots (День 3)
+Данные реликвий, дисплей-система, 6 стартовых реликвий (только данные, не арт).
+
+[]3.1 ScriptableObject/JSON-схема RelicData: id, set, rarity (Common/Rare/Epic/Mythic), displaySlotType.
+[]3.2 Завести данные для 6 стартовых реликвий (id/rarity/set-принадлежность), placeholder-визуал.
+[]3.3 MuseumDisplay: 12 фиксированных display slots на сцене Museum (позиции — заглушки).
+[]3.4 Логика "tap relic → tap slot" — выбор реликвии из инвентаря и установка в свободный слот, без drag.
+[]3.5 RelicService: хранение ownedRelics {id, rarity, count}, API для heist-результата (добавить реликвию).
+[]3.6 Бесплатный старовый Moon Teapot выдаётся при первом запуске (FTUE-хук).
+
+## Итерация 4 — Levels 1-4 / heist flow / UI wiring (День 4)
+Оркестрация run'а из комнат, состояние потока, минимальная UI-обвязка (без визуального дизайна).
+
+[]4.1 RoomDirector: собирает heist run из модульных данных — список комнат (3-5) с типами ловушек по музею.
+[]4.2 HeistFlow как state machine: TargetSelect → Rooms(1..N) → RelicChoice → Escape → Result.
+[]4.3 RelicChoice: показ трёх витрин (случайные реликвии по rarity-весам музея), выбор одной.
+[]4.4 Result: success/failed веткование, передача данных в RelicService/Economy.
+[]4.5 UI flow wiring по схеме из ГДД: Boot → Museum/Offline Claim → Target Select → Heist Rooms → Relic Choice → Escape → Result → Display Hall/Album → Next Target (хук в UI-заглушки, сам визуал — не наша часть).
+[]4.6 Собрать музеи 1-4 как данные (rooms count, ловушки, target time) по GD-таблице музеев.
+[]4.7 Target Select: список из трёх музеев на выбор игрока (пока первые 4).
+
+## Итерация 5 — FTUE / внутренний тест (День 5)
+[]5.1 Tutorial-run: один laser/camera, гарантированный первый Rare.
+[]5.2 Прогон всех систем 1-4 подряд без креша, лог ошибок.
+[]5.3 Замерить длительность run — цель ≤3 минут.
+[]5.4 Зафиксировать метрики для gate-чеклиста ГДД (controls понятны, желание разместить добычу) — сами цифры собираются через плейтест/аналитику, не хардкодятся.
+
+## Итерация 6 — 12 музеев / 24 реликвии (данные) / 4 ловушки (День 6)
+[]6.1 Завести данные всех 12 музеев по GD-таблице (rooms, ловушки, редкость финала, target time).
+[]6.2 Завести данные всех 24 реликвий: 6 сетов × 4 редкости (id, set, rarity) — без арта.
+[]6.3 Rarity-роллер: веса 60/28/10/2% (Common/Rare/Epic/Mythic).
+[]6.4 Pity-счётчик: гарантированный Mythic на 30-й победе, сброс после выпадения.
+[]6.5 Set bonus: +5% income за 3 реликвии одного сета, кап +20%.
+[]6.6 Провалидировать что каждый музей решаем без рекламы (пока логически, по данным ловушек/таймингу).
+
+## Итерация 7 — Album / Offline / Economy / Rewards (День 7)
+[]7.1 Economy: run reward в диапазоне 150–1200 (формула зависит от музея/результата — зафиксировать по данным ГДД).
+[]7.2 Income multiplier ×1/3/8/20 в зависимости от редкости выставленной реликвии.
+[]7.3 OfflineIncome: расчёт дохода музея, кап 4 часа.
+[]7.4 Anti-cheat для офлайн-дохода: server/platform time при наличии, иначе monotonic clock + clamp против перевода часов (тест "не давать >4ч при переводе времени").
+[]7.5 Halls: разблокировка залов за 2500 / 12000 тикетов.
+[]7.6 Album: сетка 4×6, отметка собранных реликвий.
+[]7.7 Daily target (7 дней), online-time награды 3/7/12/20 минут, weekly collection, comeback map, Steal Friday, milestones 1/2/4 забега — как систему прогресса/таймеров, данные и условия триггера.
+[]7.8 Ghost time leaderboard: запись лучшего времени run на музей, отображение (локально или через PlatformBridge, если площадка даёт лидерборд).
+[]7.9 Rewarded placements — реализовать 12 точек по таблице ГДД (rv_heart, rv_smoke, rv_route, rv_tickets, rv_reroll, rv_keep, rv_offline, rv_bonus_room, rv_daily, rv_collection, rv_trial, rv_missed) с эффектами и фолбэками из таблицы.
+[]7.10 Капы на реворды: ≤3 за run, ≤5 за 20 минут.
+[]7.11 Interstitial-хук после двух heist'ов, cooldown 7 минут — вызов через PlatformBridge.
+
+## Итерация 8 — Localization / RTL / freeze (День 8)
+[]8.1 Модуль Localization: подгрузка строк по ключам (ui.play, museum.title, income.claim, target.select, heist.hearts, trap.detected, assist.route, relic.choose, escape.title, result.success, result.failed, reward.double, album.title, rarity.mythic и т.д.).
+[]8.2 Залить готовые переводы из ГДД (EN/RU/ES/PT-BR/DE/FR/TR/ID/AR) в JSON/CSV-таблицу локализации.
+[]8.3 RTL-обвязка для арабского: зеркалирование UI/карточек через код/layout-флаг.
+[]8.4 Явно НЕ зеркалить: геометрию комнат, направление escape, джойстик — проверить что RTL-флаг не трогает геймплейные координаты.
+[]8.5 Content/localization freeze — заморозка строковых ключей и данных музеев/реликвий на конец дня 8.
+
+## Итерация 9 — Optimization / PlatformBridge / SDK (День 9)
+[]9.1 Реализовать PlatformBridge под конкретные SDK: CrazyGames, Poki, Яндекс Игры, GameDistribution, GamePix, Playgama, Y8, Lagged, itch.io (там где нужен gameplayStart/gameplayStop, реклама, сохранения через платформенный API).
+[]9.2 Аналитика: завести события load, control_selected, heist_start, trap_trigger, heart_lost, assist, relic_choice, escape_result, relic_place, offline_claim, album, reward, session_end.
+[]9.3 Save v1: реализовать схему — version, tickets, ownedRelics{id,rarity,count}, displayedSlots[12], unlockedHalls, completedMuseums, pityCounter, dailyTarget, ghostTimes, lastClaimUtc, settings, lastWriteUtc.
+[]9.4 Компактный JSON save/load, идемпотентность наград (повторное применение результата run не должно дублировать тикеты/реликвии).
+[]9.5 WebGL-оптимизация: проверить сборку под payload ≤18 МБ (без учёта арт-ассетов, которые добавятся позже), lazy-загрузка музеев 2-12, tutorial+6 relics как bootstrap-набор.
+[]9.6 Профилировка производительности героев/ловушек, пересчёта пути.
+
+## Итерация 10 — QA / сборка / сдача (День 10)
+Тест-кейсы прямо из ГДД (технические, не арт/локализационный QA):
+
+[]10.1 Tap path обходит статичные препятствия; пересчёт ≤100 мс.
+[]10.2 Все 12 музеев проходимы без рекламы.
+[]10.3 Trap telegraph опережает урон ≥500 мс.
+[]10.4 Рефреш страницы во время выбора реликвии восстанавливает те же три варианта.
+[]10.5 Reward-транзакция не дублирует реликвию/тикеты.
+[]10.6 Перевод часов назад/вперёд не даёт >4ч офлайн-дохода.
+[]10.7 Save/restore слотов дисплея — точное соответствие.
+[]10.8 Portrait tap и landscape stick дают одинаковый результат коллизий.
+[]10.9 Arabic RTL не меняет геометрию уровня.
+[]10.10 Low-end Android держит ≥30 FPS при максимум 20 активных ловушек/агентов.
+[]10.11 Initial payload ≤18 МБ, input-to-interactive ≤8 с.
+[]10.12 No-fill/skip/error рекламы не блокирует run.
+[]10.13 Кросс-браузер: Chrome/Edge/Firefox/Safari.
+[]10.14 Кросс-девайс: Android/iOS/tablet/Chromebook.
+[]10.15 Pathfinding на 30/60/120 Hz — стабильность.
+[]10.16 Context loss (потеря WebGL-контекста) — обработка без краша.
+[]10.17 Ad interruption — корректное возобновление геймплея.
+[]10.18 Duplication/offline-time attacks — повторно проверить с фокусом на save-эксплойты.
+[]10.19 Собрать 10 ZIP-сборок под площадки (без арт-финализации — что успело войти).
+[]10.20 DoD-чеклист: идемпотентные reward/save, 9 языков подключены технически, payload-бюджет соблюдён.
+
+---
+Не входит (вне скоупа этого таска): 3D/2D арт реликвий/комнат/ловушек, звук/музыка, VFX, маркетинг-пак, иконка/скриншоты, дизайн UI (визуал), сам процесс перевода текста (тексты уже даны в ГДД).

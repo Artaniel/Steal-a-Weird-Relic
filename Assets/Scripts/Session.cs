@@ -46,6 +46,7 @@ public class Session : MonoBehaviour
     }
 
     private void TeleportToRoom(int roomIndex) {
+        Debug.Log($"TeleportToRoom {roomIndex}");
         _game.map.rooms[roomIndex].Enter();
     }
 }

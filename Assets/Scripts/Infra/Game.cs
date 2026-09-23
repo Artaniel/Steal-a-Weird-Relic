@@ -24,10 +24,10 @@ public class Game : MonoBehaviour
         ui.Init(this);
         sound.Init(this);
         monetization?.Init(this);
+        map.Init(this);
         session.Init(this);
         player.Init(this);
 
-        map.Init(this);
     }
 
     public void Init(Boot boot) {

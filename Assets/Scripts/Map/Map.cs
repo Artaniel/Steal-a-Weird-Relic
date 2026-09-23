@@ -7,6 +7,10 @@ public class Map : MonoBehaviour
 
     public void Init(Game game) {
         _game = game;
+
+        foreach (Room room in rooms) {
+            room.Init(_game, this);
+        }
     }    
 }
 

@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    private Game _game;
+    private Map _map;    
+    public Transform startPoint;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void Init(Game game, Map map) {
+        _game = game;
+        _map = map;
+    }
+    
+    public void Enter() {
+        _game.player.transform.position = startPoint.transform.position;
+        _game.player.transform.rotation = startPoint.transform.rotation;    
     }
 }
+

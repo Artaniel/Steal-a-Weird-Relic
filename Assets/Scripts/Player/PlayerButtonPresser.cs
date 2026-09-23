@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class PlayerButtonPresser : MonoBehaviour
@@ -10,7 +11,20 @@ public class PlayerButtonPresser : MonoBehaviour
         _player = player;
     }
 
-    public void OnPress() {
+    public void TryPress() {
         RaycastHit[] hits = Physics.RaycastAll(_player.cameraHolder.position, _player.cameraHolder.forward);
+        
+        foreach (RaycastHit hit in hits) {
+            if (hit.collider.gameObject.CompareTag("Player")) continue;
+            if (hit.collider.TryGetComponent(out PressableObject pressable)) {
+                Press(pressable);
+                return;
+            }  else 
+                return;
+        }
+    }
+
+    private void Press(PressableObject pressable) {
+        pressable.OnPress();
     }
 }

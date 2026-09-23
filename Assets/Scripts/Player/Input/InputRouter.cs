@@ -35,6 +35,11 @@ public class InputRouter : MonoBehaviour
         moveBuffer = Vector2.zero;
         lookBuffer = Vector2.zero;
     }
+
+    public void PressE() {
+        _player.playerButtonPresser.TryPress();
+
+    }
 }
 
 public interface IInputSource

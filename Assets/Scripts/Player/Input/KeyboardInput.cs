@@ -22,6 +22,8 @@ public class KeyboardInput : MonoBehaviour, IInputSource
         _router.moveBuffer += new Vector2(x, y);
         
         _router.lookBuffer += (sensetivity + 0.01f) * deltaTime * Mouse.current.delta.value;
+
+        if (Keyboard.current.eKey.wasPressedThisFrame) _router.PressE();
     }
 
     public void ManualFixedUpdate() { }

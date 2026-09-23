@@ -2,15 +2,11 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    private Game _game; 
+    public Room[] rooms;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public void Init(Game game) {
+        _game = game;
+    }    
 }
+

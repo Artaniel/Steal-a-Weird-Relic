@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2431042312994620840}
   m_Layer: 0
   m_Name: Sound
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -62,7 +62,7 @@ GameObject:
   - component: {fileID: 5880515780174958875}
   m_Layer: 0
   m_Name: ButtonPresser
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 2977027947492152871}
   m_Layer: 0
   m_Name: Movement
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 174639328271194938}
   m_Layer: 0
   m_Name: Health
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -505,7 +505,7 @@ GameObject:
   - component: {fileID: 2280287035985217950}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -549,6 +549,7 @@ MonoBehaviour:
   movement: {fileID: 2977027947492152871}
   sound: {fileID: 2431042312994620840}
   playerButtonPresser: {fileID: 5880515780174958875}
+  cameraHolder: {fileID: 1599860754709967777}
 --- !u!54 &2280287035985217950
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -587,7 +588,7 @@ GameObject:
   - component: {fileID: 1599860754709967777}
   m_Layer: 0
   m_Name: CameraHolder
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -620,7 +621,7 @@ GameObject:
   - component: {fileID: 2730550509778493033}
   m_Layer: 0
   m_Name: PlayerInput
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -667,7 +668,7 @@ GameObject:
   - component: {fileID: 2994372903659720305}
   m_Layer: 0
   m_Name: View
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

@@ -26,6 +26,8 @@ public class Game : MonoBehaviour
         monetization?.Init(this);
         session.Init(this);
         player.Init(this);
+
+        map.Init(this);
     }
 
     public void Init(Boot boot) {
